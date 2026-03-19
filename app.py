@@ -1,22 +1,29 @@
+import streamlit as st
 from langchain_groq import ChatGroq
 from langchain_core.messages import HumanMessage
 from dotenv import load_dotenv
+import os
 
+# Load environment variables
 load_dotenv()
 
-llm = ChatGroq(model="llama-3.3-70b-versatile")
+# Title
+st.title("🤖 Agile Coach AI")
 
-print("Agile Coach AI is ready! Type 'exit' to stop.\n")
+# Initialize LLM
+llm = ChatGroq(
+    model="llama-3.3-70b-versatile",
+    api_key=os.getenv("GROQ_API_KEY")
+)
 
-while True:
-    user_input = input("You: ")
+# Input box
+user_input = st.text_input("Ask your Agile question:")
 
-    if user_input.lower() == "exit":
-        break
-
+# Response
+if user_input:
     response = llm.invoke([
         HumanMessage(content=f"Act as an Agile Coach. {user_input}")
     ])
-
-    print("\nCoach:", response.content)
-    print("-" * 50)
+    
+    st.write("### Coach Response:")
+    st.write(response.content)
